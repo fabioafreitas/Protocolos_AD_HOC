@@ -16,7 +16,7 @@ proc finish {} {
 	#Close the trace file
         close $nf
 	#Execute nam on the trace file
-        exec nam outExample3.nam &
+        #exec nam outExample3.nam &
         exit 0
 }
 
