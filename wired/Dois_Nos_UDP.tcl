@@ -2,7 +2,7 @@
 set nsim [new Simulator]
 
 # Abre o arquivo de trace do nam
-set nf [open simples2.nam w]
+set nf [open Dois_Nos_UDP.nam w]
 $nsim namtrace-all $nf
 
 # Define um procedimento 'finish'
@@ -12,7 +12,7 @@ proc finish {} {
 	#Fecha o aquivo de trace
         close $nf
 	#Executa o nam com o arquivo de trace
-        #exec nam out.nam &
+        exec nam Dois_Nos_UDP.nam &
         exit 0
 }
 
@@ -22,7 +22,7 @@ set n1 [$nsim node]
 
 # Cria link duplex entre os n�s
 $nsim duplex-link $n0 $n1 1Mb 10ms DropTail
-.
+
 # Cria e anexa um agent transmissor
 set udp0 [new Agent/UDP]
 $nsim attach-agent $n0 $udp0

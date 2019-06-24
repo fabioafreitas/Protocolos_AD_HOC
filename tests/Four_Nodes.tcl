@@ -6,7 +6,7 @@ $ns color 1 Blue
 $ns color 2 Red
 
 #Open the nam trace file
-set nf [open outExample2.nam w]
+set nf [open Four_Nodes.nam w]
 $ns namtrace-all $nf
 
 #Define a 'finish' procedure
@@ -16,7 +16,7 @@ proc finish {} {
 	#Close the trace file
         close $nf
 	#Execute nam on the trace file
-        exec nam outExample2.nam &
+        exec nam Four_Nodes.nam &
         exit 0
 }
 

@@ -5,18 +5,14 @@ set ns [new Simulator]
 $ns rtproto DV
 
 #Open the nam trace file
-set nf [open outExample3.nam w]
+set nf [open Seven_Nodes.nam w]
 $ns namtrace-all $nf
 
-
-#Define a 'finish' procedure
 proc finish {} {
         global ns nf
         $ns flush-trace
-	#Close the trace file
         close $nf
-	#Execute nam on the trace file
-        #exec nam outExample3.nam &
+        exec nam Seven_Nodes.nam &
         exit 0
 }
 
@@ -46,7 +42,7 @@ set null0 [new Agent/Null]
 $ns attach-agent $n(3) $null0
 
 #Connect the traffic source with the traffic sink
-$ns connect $udp0 $null0  
+$ns connect $udp0 $null0
 
 #Schedule events for the CBR agent and the network dynamics
 $ns at 0.5 "$cbr0 start"

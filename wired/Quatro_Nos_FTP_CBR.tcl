@@ -2,10 +2,10 @@
 set nsim [new Simulator]
 
 # Abre o arquivo de trace do nam
-set nf [open simples3.nam w]
+set nf [open Quatro_Nos_FTP_CBR.nam w]
 $nsim namtrace-all $nf
 # cria o arquivo de trace em formato geral
-set tf [open simples3.tr w]
+set tf [open Quatro_Nos_FTP_CBR.tr w]
 $nsim trace-all $tf
 
 # Define um procedimento 'finish'
@@ -16,22 +16,22 @@ proc finish {} {
         close $nf
         close $tf
 	#Executa o nam com o arquivo de trace
-        #exec nam out.nam &
+        exec nam Quatro_Nos_FTP_CBR.nam &
         exit 0
 }
 
-# Cria quatro nós
+# Cria quatro nï¿½s
 set n0 [$nsim node]
 set n1 [$nsim node]
 set n2 [$nsim node]
 set n3 [$nsim node]
 
-# Cria os links entre os nós
+# Cria os links entre os nï¿½s
 $nsim duplex-link $n0 $n2 2Mb 10ms DropTail
 $nsim duplex-link $n1 $n2 2Mb 10ms DropTail
 $nsim duplex-link $n2 $n3 1.7Mb 20ms DropTail
 
-# Determina a posição dos nós/links no nam
+# Determina a posiï¿½ï¿½o dos nï¿½s/links no nam
 #ns-nam
 $nsim duplex-link-op $n0 $n2 orient right-down
 $nsim duplex-link-op $n1 $n2 orient right-up
@@ -40,8 +40,8 @@ $nsim duplex-link-op $n2 $n3 orient right
 $nsim color 1 Blue
 $nsim color 2 Red
 
-# Configurando as conexões:
-# Configura conexão TCP
+# Configurando as conexï¿½es:
+# Configura conexï¿½o TCP
 set tcp [new Agent/TCP]
 $nsim attach-agent $n0 $tcp
 set sink [new Agent/TCPSink]
@@ -49,7 +49,7 @@ $nsim attach-agent $n3 $sink
 $nsim connect $tcp $sink
 $tcp set fid_ 1
 
-# Configura uma conexão FTP sobre TCP
+# Configura uma conexï¿½o FTP sobre TCP
 set ftp [new Application/FTP]
 $ftp attach-agent $tcp
 $ftp set type_ FTP
@@ -74,5 +74,5 @@ $nsim at 4.0 "$ftp stop"
 $nsim at 4.5 "$cbr stop"
 $nsim at 5.0 "finish"
 
-# Executa a simulação
+# Executa a simulaï¿½ï¿½o
 $nsim run

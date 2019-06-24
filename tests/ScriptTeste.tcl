@@ -8,7 +8,7 @@
 # Create a new simulator object.
 set ns [new Simulator]
 # Create a nam trace datafile.
-set namfile [open /home/fabio/Dropbox/2019_1/Redes Sem Fio/Learning ns2/Teste.nam w]
+set namfile [open ScriptTeste.nam w]
 $ns namtrace-all $namfile
 
 # Create wired nodes.
@@ -56,8 +56,9 @@ proc finish {} {
 	global ns namfile
 	$ns flush-trace
 	close $namfile
-	exec nam -r 2000.000000us /home/fabio/Dropbox/2019_1/Redes Sem Fio/Learning ns2/Teste.nam &	
+	exec nam -r 2000.000000us ScriptTeste.nam &	
 	exit 0
-	}
+}
+
 $ns at 60.000000 "finish"
 $ns run

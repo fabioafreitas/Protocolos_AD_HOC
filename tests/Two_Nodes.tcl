@@ -8,7 +8,7 @@ set ns [new Simulator]
 
 #variável nf representa o arquivo que será escrito com os dados de saída
 #o arquivo é aberto em modo de escrita "w"
-set nf [open outExample1.nam w]
+set nf [open Two_Nodes.nam w]
 
 
 
@@ -21,7 +21,7 @@ proc finish {} {
   global ns nf
   $ns flush-trace
   close $nf
-  exec nam outExample1.nam &
+  exec nam Two_Nodes.nam &
   exit 0
 }
 
