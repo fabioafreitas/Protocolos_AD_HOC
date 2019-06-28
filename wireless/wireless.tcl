@@ -1,4 +1,4 @@
-# Define opções dos nós wireless
+# Define opï¿½ï¿½es dos nï¿½s wireless
 set val(chan) Channel/WirelessChannel ;# channel type
 set val(prop) Propagation/TwoRayGround ;# radio-propagation model
 set val(netif) Phy/WirelessPhy ;# network interface type
@@ -30,7 +30,7 @@ proc finish {} {
         close $nf
         close $tf
 	#Executa o nam com o arquivo de trace
-        #exec nam out.nam &
+        exec nam wireless.nam &
         exit 0
 }
 
@@ -40,7 +40,7 @@ $topo load_flatgrid $val(x) $val(y)
 
 create-god $val(nn)
 
-# configura os nós
+# configura os nï¿½s
 $nsim node-config -adhocRouting $val(rp) \
 -llType $val(ll) \
 -macType $val(mac) \
@@ -56,12 +56,12 @@ $nsim node-config -adhocRouting $val(rp) \
 -macTrace OFF \
 -movementTrace ON
 
-#cria os nós
+#cria os nï¿½s
 for {set i 0} {$i < $val(nn) } { incr i } {
     set n($i) [$nsim node]
 }
 
-# Provê localização inicial dos nós móveis
+# Provï¿½ localizaï¿½ï¿½o inicial dos nï¿½s mï¿½veis
 $n(0) set X_ 247.0
 $n(0) set Y_ 3.0
 $n(0) set Z_ 0.0
@@ -102,7 +102,7 @@ $n(9) set X_ 130.0
 $n(9) set Y_ 36.0
 $n(9) set Z_ 0.0
 
-# estabelece uma conexão TCP entre n(1) and n(3)
+# estabelece uma conexï¿½o TCP entre n(1) and n(3)
 set tcp [new Agent/TCP/Newreno]
 $tcp set class_ 1
 set sink [new Agent/TCPSink]
@@ -113,7 +113,7 @@ set ftp [new Application/FTP]
 $ftp attach-agent $tcp
 $nsim at 10.0 "$ftp start"
 
-# estabelece uma conexão TCP entre n(1) and n(3)
+# estabelece uma conexï¿½o TCP entre n(1) and n(3)
 set tcp [new Agent/TCP/Newreno]
 $tcp set class_ 2
 set sink [new Agent/TCPSink]
@@ -124,7 +124,7 @@ set ftp [new Application/FTP]
 $ftp attach-agent $tcp
 $nsim at 10.0 "$ftp start"
 
-#define rótulos
+#define rï¿½tulos
 $nsim at 0.0 "$n(0) label CH"
 $nsim at 0.0 "$n(1) label Source01"
 $nsim at 0.0 "$n(2) label Source02"
@@ -136,7 +136,7 @@ $nsim at 0.0 "$n(4) label Sink02"
 #$nsim at 0.0 "$n(8) label N08"
 #$nsim at 0.0 "$n(9) label N09"
 
-#define movimentação dos nós
+#define movimentaï¿½ï¿½o dos nï¿½s
 $nsim at 10.0 "$n(5) setdest 485.0 228.0 5.0"
 $nsim at 13.0 "$n(2) setdest 400.0 20.0 5.0"
 $nsim at 15.0 "$n(1) setdest 115.0 85.0 5.0"
@@ -149,7 +149,7 @@ $nsim at 17.0 "$n(6) setdest 270.0 150.0 5.0"
 #$nsim initial_node_pos $n($i) 20
 #}
 
-# reseta os nós
+# reseta os nï¿½s
 for {set i 0} {$i < $val(nn) } { incr i } {
 $nsim at $val(stop) "$n($i) reset";
 }
