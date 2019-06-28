@@ -1,4 +1,4 @@
-#Variaveis dos nós Wireless
+#Variaveis dos nodes Wireless
 set val(chan) Channel/WirelessChannel ; # channel type
 set val(prop) Propagation/TwoRayGround ;# radio-propagation model
 set val(netif) Phy/WirelessPhy ;        # network interface type
@@ -14,25 +14,11 @@ set val(y) 500 ;                        # Y dimension of topography
 set val(stop) 50 ;                      # time of simulation end
 
 set nsim [new Simulator]
+set nfile [open DSDV.nam w]
+$nsim namtrace-all-wireless $nfile $val(x) $val(y)
 
-# Abre o arquivo de trace do nam
-set nf [open wireless.nam w]
-$nsim namtrace-all-wireless $nf $val(x) $val(y)
-# cria o arquivo de trace em formato geral
-set tf [open wireless.tr w]
-$nsim trace-all $tf
-
-# Define um procedimento 'finish'
-proc finish {} {
-        global nsim nf tf
-        $nsim flush-trace
-	#Fecha o aquivo de trace
-        close $nf
-        close $tf
-	#Executa o nam com o arquivo de trace
-        #exec nam out.nam &
-        exit 0
-}
+set tfile [open DSDV.tr w]
+$nsim trace-all $tfile
 
 # define objeto de topografia
 set topo [new Topography]
@@ -40,7 +26,7 @@ $topo load_flatgrid $val(x) $val(y)
 
 create-god $val(nn)
 
-# configura os n�s
+# configura os nodes
 $nsim node-config -adhocRouting $val(rp) \
 -llType $val(ll) \
 -macType $val(mac) \
@@ -55,108 +41,53 @@ $nsim node-config -adhocRouting $val(rp) \
 -routerTrace ON \
 -macTrace OFF \
 -movementTrace ON
+########################## BEGIN ##################################
 
-#cria os n�s
+
+#Cria e posiciona os nodes randomicamente
 for {set i 0} {$i < $val(nn) } { incr i } {
         set n($i) [$nsim node]
+        set xx [expr rand()*500]
+        set yy [expr rand()*400]
+        $n($i) set X_ $xx
+        $n($i) set Y_ $yy
+        $n($i) set Z_ 0.0
+        $nsim initial_node_pos $n($i) 30
 }
 
-# Prov� localiza��o inicial dos n�s m�veis
-$n(0) set X_ 247.0
-$n(0) set Y_ 3.0
-$n(0) set Z_ 0.0
-
-$n(1) set X_ 245.0
-$n(1) set Y_ 36.0
-$n(1) set Z_ 0.0
-
-$n(2) set X_ 230.0
-$n(2) set Y_ 121.0
-$n(2) set Z_ 0.0
-
-$n(3) set X_ 216.0
-$n(3) set Y_ 152.0
-$n(3) set Z_ 0.0
-
-$n(4) set X_ 146.0
-$n(4) set Y_ 90.0
-$n(4) set Z_ 0.0
-
-$n(5) set X_ 279.0
-$n(5) set Y_ 6.0
-$n(5) set Z_ 0.0
-
-$n(6) set X_ 179.0
-$n(6) set Y_ 6.0
-$n(6) set Z_ 0.0
-
-$n(7) set X_ 279.0
-$n(7) set Y_ 160.0
-$n(7) set Z_ 0.0
-
-$n(8) set X_ 209.0
-$n(8) set Y_ 60.0
-$n(8) set Z_ 0.0
-
-$n(9) set X_ 130.0
-$n(9) set Y_ 36.0
-$n(9) set Z_ 0.0
-
-# estabelece uma conex�o TCP entre n(1) and n(3)
-set tcp [new Agent/TCP/Newreno]
-$tcp set class_ 1
-set sink [new Agent/TCPSink]
-$nsim attach-agent $n(1) $tcp
-$nsim attach-agent $n(3) $sink
-$nsim connect $tcp $sink
-set ftp [new Application/FTP]
-$ftp attach-agent $tcp
-$nsim at 10.0 "$ftp start"
-
-# estabelece uma conex�o TCP entre n(1) and n(3)
-set tcp [new Agent/TCP/Newreno]
-$tcp set class_ 2
-set sink [new Agent/TCPSink]
-$nsim attach-agent $n(2) $tcp
-$nsim attach-agent $n(4) $sink
-$nsim connect $tcp $sink
-set ftp [new Application/FTP]
-$ftp attach-agent $tcp
-$nsim at 10.0 "$ftp start"
-
-#define r�tulos
-$nsim at 0.0 "$n(0) label CH"
-$nsim at 0.0 "$n(1) label Source01"
-$nsim at 0.0 "$n(2) label Source02"
-$nsim at 0.0 "$n(3) label Sink01"
-$nsim at 0.0 "$n(4) label Sink02"
-#$nsim at 0.0 "$n(5) label N05"
-#$nsim at 0.0 "$n(6) label N06"
-#$nsim at 0.0 "$n(7) label N07"
-#$nsim at 0.0 "$n(8) label N08"
-#$nsim at 0.0 "$n(9) label N09"
-
-#define movimenta��o dos n�s
-$nsim at 10.0 "$n(5) setdest 485.0 228.0 5.0"
-$nsim at 13.0 "$n(2) setdest 400.0 20.0 5.0"
-$nsim at 15.0 "$n(1) setdest 115.0 85.0 5.0"
-$nsim at 16.0 "$n(7) setdest 315.0 35.0 5.0"
-$nsim at 17.0 "$n(6) setdest 270.0 150.0 5.0"
-
-# Define node initial position in nam
-#for {set i 0} {$i < $val(nn)} { incr i } {
-# 20 defines the node size for nam
-#$nsim initial_node_pos $n($i) 20
-#}
-
-# reseta os n�s
+# reseta os nodes
 for {set i 0} {$i < $val(nn) } { incr i } {
-$nsim at $val(stop) "$n($i) reset";
+        $nsim at $val(stop) "$n($i) reset";
 }
 
-$nsim at $val(stop) "$nsim nam-end-wireless $val(stop)"
+# dynamic destination setting procedure..
+$ns at 0.0 "destination"
+proc destination {} {
+      global ns val node_
+      set time 1.0
+      set now [$ns now]
+      for {set i 0} {$i<$val(nn)} {incr i} {
+            set xx [expr rand()*500]
+            set yy [expr rand()*400]
+            $ns at $now "$node_($i) setdest $xx $yy 10.0"
+      }
+      $ns at [expr $now+$time] "destination"
+}
+
+
+########################## END ##################################
+# Define um procedimento 'finish'
+proc finish {} {
+        global nsim nfile tfile
+        $nsim flush-trace
+        close $nfile
+        close $tfile
+        exec nam DSDV.nam &
+}
+
+#$nsim at $val(stop) "$nsim nam-end-wireless $val(stop)"
 $nsim at $val(stop) "finish"
-$nsim at 30.01 "puts \"end simulation\" ; $nsim halt"
+#$nsim at 30.01 "puts \"end simulation\" ; $nsim halt"
 
 
 $nsim run
