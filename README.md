@@ -16,3 +16,7 @@ Inicia a animação da simulação
 
 Calcula o Packet Delivery Ratio
 #### `./GetPDR.sh`
+
+## Resultados
+
+Estão no seguinte link: [Resultados](https://drive.google.com/open?id=15M8Nw0NNQo_QkGGBZwIR59y31JxTHVc4pggoxZLfHZA)
