@@ -1,5 +1,0 @@
-
-
-GeneratedPackets = 182642
-ReceivedPackets = 26842
-Packet Delivery Ratio = 14.6965
