@@ -13,13 +13,15 @@ set val(ifq) Queue/DropTail/PriQueue ;  # Tipo de interface de fila
 set val(ll) LL ;                        # Tipo da camada de link LL
 set val(ant) Antenna/OmniAntenna ;      # Modelo de antena
 set val(ifqlen) 50 ;                    # Tamanho maximo de pacotes ifq
-
+set val(intervaloCBR) 0.1 ;
+set val(pacoteCBR) 512kb ;
+set val(timeDirection) 10 ;
 
 set nsim [new Simulator]
-set nfile [open DSR.nam w]
+set nfile [open DSDV.nam w]
 $nsim namtrace-all-wireless $nfile $val(x) $val(y)
 
-set tfile [open DSR.tr w]
+set tfile [open DSDV.tr w]
 $nsim trace-all $tfile
 
 # define objeto de topografia
@@ -48,8 +50,8 @@ $nsim node-config -adhocRouting $val(rp) \
 #Cria e posiciona os nodes randomicamente
 for {set i 0} {$i < $val(nn) } { incr i } {
         set n($i) [$nsim node]
-        set xx [expr rand()*500]
-        set yy [expr rand()*400]
+        set xx [expr rand()*$val(x)]
+        set yy [expr rand()*$val(y)]
         $n($i) set X_ $xx
         $n($i) set Y_ $yy
         $n($i) set Z_ 0.0
@@ -58,34 +60,37 @@ for {set i 0} {$i < $val(nn) } { incr i } {
 }
 
 #Chamando procedimento para determinar o destino final dos nodes
-$nsim at 0.0 "destination"
+$nsim at 0.0 "direcaoNodes"
 
 #Criando mecanismos de comunicacao entre os nodes
+$nsim color 1 Blue
 for {set i 0} {$i < $val(nn) / 2} {incr i} {
         #define nodes e agentes destino e origem
         set origin [expr $i]
         set destiny [expr $val(nn) - $i - 1]
         
         #Criando agentes responsaveis por enviar e receber pacotes
-        set cbr($i) [new Application/Traffic/CBR]
-        set udp($i) [new Agent/UDP]
-        set sink($i) [new Agent/Null]
+        set cbr [new Application/Traffic/CBR]
+        set udp [new Agent/UDP]
+        set sink [new Agent/Null]
 
         #configurando roteamento entre os nodes
-        $nsim attach-agent $n($origin) $udp($i)
-        $nsim attach-agent $n($destiny) $sink($i)
-        $nsim connect $udp($i) $sink($i)
-        $cbr($i) attach-agent $udp($i)
-        $cbr($i) set rate_ 512kb
+        $nsim attach-agent $n($origin) $udp
+        $nsim attach-agent $n($destiny) $sink
+        $nsim connect $udp $sink
+        $cbr attach-agent $udp
+        $cbr set packetSize_ $val(pacoteCBR)
+        $cbr set interval_ $val(intervaloCBR)
 
         #Definindo cores para os nodes
         $n($origin) color green
         $nsim at 0.0 " $n($origin) color green"
         $n($destiny) color red
         $nsim at 0.0 " $n($destiny) color red"
+        $udp set class_ 1
 
-        $nsim at 0.1 "$cbr($i) start"
-        $nsim at 99.9 "$cbr($i) stop"
+        $nsim at 0.1 "$cbr start"
+        $nsim at [expr $val(stop) - 0.1] "$cbr stop"
 }
 
 # Indicando quando os nodes devem ser resetados
@@ -96,16 +101,17 @@ for {set i 0} {$i < $val(nn) } { incr i } {
 ########################## END ##################################
 #Determina o destino randomico para cada node
 #Muda a direcao dos nodes a cada 10 segundos
-proc destination {} {
+proc direcaoNodes {} {
         global nsim val n
-        set time 10
+        set time $val(timeDirection)
         set now [$nsim now]
         for {set i 0} {$i<$val(nn)} {incr i} {
-                set xx [expr rand()*500]
-                set yy [expr rand()*400]
+                set xx [expr rand()*$val(x)]
+                set yy [expr rand()*$val(y)]
                 $nsim at $now "$n($i) setdest $xx $yy $val(speed)"
         }
-        $nsim at [expr $now+$time] "destination"
+        #Mudando a direcao recursivamente
+        $nsim at [expr $now+$time] "direcaoNodes"
 }
 
 # Define um procedimento 'finish'
@@ -114,12 +120,11 @@ proc finish {} {
         $nsim flush-trace
         close $nfile
         close $tfile
-        #exec nam DSR.nam &
 }
+
 
 $nsim at $val(stop) "$nsim nam-end-wireless $val(stop)"
 $nsim at $val(stop) "finish"
 $nsim at 100.01 "puts \"end simulation\" ; $nsim halt"
-
 
 $nsim run
