@@ -114,7 +114,7 @@ proc finish {} {
         $nsim flush-trace
         close $nfile
         close $tfile
-        exec nam AODV.nam &
+        #exec nam AODV.nam &
 }
 
 $nsim at $val(stop) "$nsim nam-end-wireless $val(stop)"
