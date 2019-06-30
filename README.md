@@ -7,6 +7,7 @@ Comparação da performance dos procolos AODV, DSDV e DSR combinando os seguinte
   - Velocidade dos nós: 1, 5 e 10 m/s
 
 ## Execução
+Entre no folder que deseja executar e execute os comandos abaixo.
 
 Executa a simulação
 #### `ns [file.tcl]` 
