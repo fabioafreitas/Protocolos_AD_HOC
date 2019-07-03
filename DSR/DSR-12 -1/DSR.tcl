@@ -18,10 +18,10 @@ set val(pacoteCBR) 512kb ;
 set val(timeDirection) 10 ;
 
 set nsim [new Simulator]
-set nfile [open DSDV.nam w]
+set nfile [open DSR.nam w]
 $nsim namtrace-all-wireless $nfile $val(x) $val(y)
 
-set tfile [open DSDV.tr w]
+set tfile [open DSR.tr w]
 $nsim trace-all $tfile
 
 # define objeto de topografia
