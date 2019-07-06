@@ -14,7 +14,7 @@ set val(ll) LL ;                        # Tipo da camada de link LL
 set val(ant) Antenna/OmniAntenna ;      # Modelo de antena
 set val(ifqlen) 50 ;                    # Tamanho maximo de pacotes ifq
 set val(intervaloCBR) 0.1 ;
-set val(pacoteCBR) 512kb ;
+set val(pacoteCBR) 512kB ;
 set val(timeDirection) 10 ;
 
 set nsim [new Simulator]
